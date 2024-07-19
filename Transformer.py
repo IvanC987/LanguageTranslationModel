@@ -187,19 +187,4 @@ class Transformer(nn.Module):
         output = self.projection(dec_output)
         return output
 
-    def generate(self, enc_text, dec_text, max_new_tokens, src_to_int, tgt_to_int):
-        # Need to add padding tokens?
-        enc_tokens = torch.tensor([src_to_int[c] for c in enc_text][:self.seq_len], device=self.device).reshape(1, -1)  # Limited to seq_len due to pos_enc limitation
-        # dec_tokens = torch.tensor([tgt_to_int[c] for c in dec_text][:self.seq_len]).reshape(1, -1)
-        dec_tokens = torch.ones((1, 1), dtype=torch.long, device=self.device)
-        for _ in range(max_new_tokens):
-            trim = dec_tokens[:, -self.seq_len:]
-            logits = self(enc_tokens, trim)
-            logits = logits[:, -1, :]
-            probs = F.softmax(logits, dim=-1)
-            idx = torch.multinomial(probs, num_samples=1)
-            dec_tokens = torch.cat((dec_tokens, idx), dim=-1)
-
-        return dec_tokens
-
 
