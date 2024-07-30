@@ -61,7 +61,6 @@ def filter_max_length(src_sentences: list[str], tgt_sentences: list[str]):
     assert len(src_sentences) == len(tgt_sentences), "len(src_sentences) != len(tgt_sentences)"
 
     src, tgt = [], []
-    cropped_count = 0
     for idx in range(len(src_sentences)):
         if (len(src_sentences[idx]) < (seq_len - 1)) and (len(tgt_sentences[idx]) < (seq_len - 1)):
             src.append(src_sentences[idx])
@@ -69,7 +68,6 @@ def filter_max_length(src_sentences: list[str], tgt_sentences: list[str]):
         else:
             src.append(src_sentences[idx][:seq_len-2])
             tgt.append(tgt_sentences[idx][:seq_len-2])
-            cropped_count += 1
 
     return src, tgt
 

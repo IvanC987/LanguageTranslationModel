@@ -1,6 +1,12 @@
 import jieba
 import torch
+import nltk
 from nltk.translate.meteor_score import meteor_score
+from Train import initiate_model
+
+
+nltk.download('wordnet')
+
 
 with open("en_test.txt", "r", encoding="utf-8") as f:
     src_sentences = f.read().split("\n")
@@ -12,7 +18,9 @@ with open("zh_test.txt", "r", encoding="utf-8") as f:
 assert len(src_sentences) == len(tgt_sentences), f"Len src: {len(src_sentences)}, Len tgt: {len(tgt_sentences)}"
 print(f"Length of testing dataset: {len(src_sentences)}")
 device = "cuda" if torch.cuda.is_available() else "cpu"
-model = torch.load("TL_0.810-VL_0.955.pth").to(device)
+state = torch.load("TL_0.810-VL_0.955_state_dict.pth", map_location=torch.device(device))
+model = initiate_model()[0].to(device)
+model.load_state_dict(state)
 
 print("Starting")
 
